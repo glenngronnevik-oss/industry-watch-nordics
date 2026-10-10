@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Industry Watch Admin</title>
+<style>
+:root{--bg:#f5f6f8;--surface:#fff;--text:#16202c;--muted:#5b6778;--border:#dde2e9;--accent:#0b5cad;--err:#b4232f;--ok:#18794e}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0f141b;--surface:#171e27;--text:#e6ebf1;--muted:#9aa6b5;--border:#2a3441;--accent:#5aa2ec;--err:#f17e88;--ok:#5fcf97}}
+:root[data-theme="dark"]{--bg:#0f141b;--surface:#171e27;--text:#e6ebf1;--muted:#9aa6b5;--border:#2a3441;--accent:#5aa2ec;--err:#f17e88;--ok:#5fcf97}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 "Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif}
+.wrap{max-width:720px;margin:0 auto;padding:24px 16px 64px}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+h1{font-size:24px;margin:0}
+nav a,nav button{font:inherit;font-size:13.5px;color:var(--accent);background:none;border:0;cursor:pointer;margin-left:12px;padding:0}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 20px;margin-bottom:16px}
+h2{font-size:16px;margin:0 0 4px}
+.note{color:var(--muted);font-size:13px;margin:0 0 14px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:520px){.row{grid-template-columns:1fr}}
+label{display:block;font-size:12.5px;font-weight:600;margin-bottom:4px}
+input{width:100%;font:inherit;padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text)}
+button.primary{margin-top:12px;font:inherit;font-weight:600;padding:8px 16px;border:0;border-radius:8px;background:var(--accent);color:#fff;cursor:pointer}
+.msg{font-size:13.5px;min-height:20px;margin-top:8px}
+.msg.ok{color:var(--ok)}.msg.bad{color:var(--err)}
+dl{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:0;font-size:14px}dt{color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Access settings</h1>
+  <nav><a href="/">Dashboard</a><button id="logout" type="button">Sign out</button></nav>
+</header>
+
+<section class="panel">
+  <h2>Change viewer PIN</h2>
+  <p class="note">Everyone currently signed in with the old viewer PIN is signed out. 6 to 12 digits.</p>
+  <form data-target="viewer" autocomplete="off">
+    <div class="row">
+      <div><label>New viewer PIN</label><input name="new" type="password" inputmode="numeric" maxlength="12" required></div>
+      <div><label>Repeat new viewer PIN</label><input name="repeat" type="password" inputmode="numeric" maxlength="12" required></div>
+    </div>
+    <div style="margin-top:10px"><label>Current admin PIN (to confirm)</label><input name="admin" type="password" inputmode="numeric" maxlength="12" required></div>
+    <button class="primary" type="submit">Change viewer PIN</button>
+    <div class="msg" role="status"></div>
+  </form>
+</section>
+
+<section class="panel">
+  <h2>Change admin PIN</h2>
+  <p class="note">8 to 12 digits, and different from the viewer PIN. Other admin sessions are signed out.</p>
+  <form data-target="admin" autocomplete="off">
+    <div class="row">
+      <div><label>New admin PIN</label><input name="new" type="password" inputmode="numeric" maxlength="12" required></div>
+      <div><label>Repeat new admin PIN</label><input name="repeat" type="password" inputmode="numeric" maxlength="12" required></div>
+    </div>
+    <div style="margin-top:10px"><label>Current admin PIN</label><input name="admin" type="password" inputmode="numeric" maxlength="12" required></div>
+    <button class="primary" type="submit">Change admin PIN</button>
+    <div class="msg" role="status"></div>
+  </form>
+</section>
+
+<section class="panel">
+  <h2>Sign out all viewers</h2>
+  <p class="note">Ends every viewer session without changing the PIN.</p>
+  <button class="primary" id="revoke" type="button">Sign out all viewers</button>
+  <div class="msg" id="revoke-msg" role="status"></div>
+</section>
+
+<section class="panel">
+  <h2>Data status</h2>
+  <dl id="status"><dt>Loading</dt><dd></dd></dl>
+</section>
+</div>
+<script src="admin.js"></script>
+</body>
+</html>

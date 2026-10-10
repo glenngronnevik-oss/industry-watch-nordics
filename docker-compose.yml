@@ -1,0 +1,61 @@
+# Industry Watch Nordics stack (Portainer: Stacks > Add stack > Repository, or `docker compose up -d`).
+# Secrets come from environment variables (Portainer "Environment variables" section, or a local .env file).
+name: industry-watch
+
+services:
+  portal:
+    # Option A (default): build on the Pi from this repo.
+    build: .
+    # Option B: use the image GitHub Actions publishes, and remove `build:` above.
+    # image: ghcr.io/glenngronnevik-oss/industry-watch-nordics:latest
+    image: industry-watch-nordics:local
+    container_name: iw-portal
+    restart: unless-stopped
+    environment:
+      IW_INGEST_TOKEN: ${IW_INGEST_TOKEN:?set IW_INGEST_TOKEN}
+      # Initial PINs, read only on first start (or when IW_RESET_PINS=1). Remove after first start.
+      IW_VIEWER_PIN: ${IW_VIEWER_PIN:-}
+      IW_ADMIN_PIN: ${IW_ADMIN_PIN:-}
+      IW_RESET_PINS: ${IW_RESET_PINS:-0}
+      IW_PUBLIC_HOST: ${IW_PUBLIC_HOST:-industrywatchnordics.gronnevik.org}
+      IW_GITHUB_REPO: ${IW_GITHUB_REPO:-glenngronnevik-oss/industry-watch-nordics-data}
+      IW_GITHUB_BRANCH: ${IW_GITHUB_BRANCH:-main}
+      IW_GITHUB_PATH: ${IW_GITHUB_PATH:-industry-watch-data.js}
+      IW_GITHUB_TOKEN: ${IW_GITHUB_TOKEN:-}
+      # Set this instead of the GitHub settings to poll any https URL (e.g. a view-only share link).
+      IW_SOURCE_URL: ${IW_SOURCE_URL:-}
+      IW_SYNC_INTERVAL: ${IW_SYNC_INTERVAL:-300}
+      TZ: Europe/Oslo
+    volumes:
+      - iw-data:/data
+    # No published ports: only cloudflared reaches the portal, over the internal network.
+    # For LAN testing, uncomment:
+    # ports:
+    #   - "8080:8080"
+    networks: [iw]
+    read_only: true
+    tmpfs: [/tmp]
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: [ALL]
+    mem_limit: 256m
+
+  cloudflared:
+    image: cloudflare/cloudflared:2026.10.0
+    container_name: iw-cloudflared
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN:?set CLOUDFLARE_TUNNEL_TOKEN}
+    depends_on:
+      portal:
+        condition: service_healthy
+    networks: [iw]
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: [ALL]
+    mem_limit: 128m
+
+volumes:
+  iw-data:
+
+networks:
+  iw:
