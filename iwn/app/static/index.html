@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Industry Watch</title>
+<style>
+:root{
+  --bg:#f5f6f8;--surface:#ffffff;--surface-2:#eef1f5;--text:#16202c;--muted:#5b6778;--border:#dde2e9;
+  --accent:#0b5cad;--accent-soft:#e3eefa;
+  --threat:#b4232f;--threat-bg:#fbe9eb;--opp:#18794e;--opp-bg:#e5f4ec;--parity:#8a5a00;--parity-bg:#fbf1dc;--watch:#4b5563;--watch-bg:#eceef1;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f141b;--surface:#171e27;--surface-2:#1e2732;--text:#e6ebf1;--muted:#9aa6b5;--border:#2a3441;
+  --accent:#5aa2ec;--accent-soft:#16304d;
+  --threat:#f17e88;--threat-bg:#3a1a1f;--opp:#5fcf97;--opp-bg:#12301f;--parity:#e7b75a;--parity-bg:#3a2d10;--watch:#b4bdc9;--watch-bg:#252d38;}}
+:root[data-theme="dark"]{
+  --bg:#0f141b;--surface:#171e27;--surface-2:#1e2732;--text:#e6ebf1;--muted:#9aa6b5;--border:#2a3441;
+  --accent:#5aa2ec;--accent-soft:#16304d;
+  --threat:#f17e88;--threat-bg:#3a1a1f;--opp:#5fcf97;--opp-bg:#12301f;--parity:#e7b75a;--parity-bg:#3a2d10;--watch:#b4bdc9;--watch-bg:#252d38;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 "Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif}
+a{color:var(--accent)}
+.wrap{max-width:1240px;margin:0 auto;padding:24px 16px 64px}
+header{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;justify-content:space-between;margin-bottom:20px}
+h1{font-size:26px;margin:0;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:14px}
+.stamp{font-size:13px;color:var(--muted);text-align:right}
+.stamp b{color:var(--text)}
+.stale{color:var(--threat);font-weight:600}
+h2{font-size:17px;margin:32px 0 12px}
+h3.sect{font-size:15px;margin:22px 0 4px}
+.sect-note{font-size:12.5px;color:var(--muted);margin:0 0 10px}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.brief ul{margin:0;padding-left:20px}.brief li{margin:6px 0}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:16px}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;cursor:pointer}
+.kpi.active{outline:2px solid var(--accent)}
+.kpi .n{font-size:26px;font-weight:650}.kpi .l{font-size:13px;color:var(--muted)}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:16px 0}
+.controls input,.controls select{font:inherit;padding:7px 10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text)}
+.controls input{flex:1;min-width:200px}
+.chip{border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:999px;padding:5px 12px;font:inherit;font-size:13px;cursor:pointer}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:14px}
+@media (max-width:520px){.grid{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12px;color:var(--muted)}
+.tag{font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--surface-2);color:var(--muted)}
+.sig-Threat{background:var(--threat-bg);color:var(--threat)}
+.sig-Opportunity{background:var(--opp-bg);color:var(--opp)}
+.sig-Parity{background:var(--parity-bg);color:var(--parity)}
+.sig-Watch{background:var(--watch-bg);color:var(--watch)}
+.imp-High{border-left:4px solid var(--threat)}.imp-Medium{border-left:4px solid var(--parity)}.imp-Low{border-left:4px solid var(--border)}
+.card h3{font-size:15.5px;margin:0;line-height:1.35}
+.card p{margin:0;font-size:14px}
+.angle{background:var(--accent-soft);border-radius:8px;padding:9px 11px;font-size:13.5px}
+.angle b{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);margin-bottom:2px}
+.src{font-size:12.5px;margin-top:auto}
+.new{background:var(--accent);color:#fff}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--border)}
+th{background:var(--surface-2);font-weight:600}
+td:first-child{font-weight:600;white-space:nowrap}
+.tscroll{overflow-x:auto}
+.note{font-size:12.5px;color:var(--muted);margin-top:8px}
+.nc{color:var(--muted);font-style:italic}
+.watch-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.w .d{font-weight:700;color:var(--accent)}.w .days{font-size:12px;color:var(--muted)}
+.empty{color:var(--muted);padding:20px;text-align:center}
+footer{margin-top:40px;font-size:12.5px;color:var(--muted)}
+.themebtn{font:inherit;font-size:12px;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:6px;padding:3px 8px;cursor:pointer;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div>
+    <h1>Industry Watch</h1>
+    <div class="sub">Print, workflow and PDF news, mapped to the Tungsten Automation portfolio</div>
+  </div>
+  <div class="stamp" id="stamp"></div>
+</header>
+
+<section class="panel brief"><strong>This week's briefing</strong><ul id="brief"></ul></section>
+
+<div class="kpis" id="kpis"></div>
+
+<h2>News feed</h2>
+<div class="controls">
+  <input id="q" type="search" placeholder="Search headlines, vendors, products">
+  <select id="prod"><option value="">All Tungsten products</option></select>
+  <select id="sort"><option value="impact">Highest impact first</option><option value="date">Newest first</option></select>
+</div>
+<div class="controls" id="sigchips"></div>
+<h3 class="sect" id="feed-h">Latest (added in the last 7 days)</h3>
+<div class="grid" id="feed"></div>
+<h3 class="sect" id="feed-old-h">Not newest, but relevant</h3>
+<p class="sect-note">Items added to the dashboard more than 7 days ago.</p>
+<div class="grid" id="feed-old"></div>
+
+<h2>Portfolio comparison</h2>
+<div id="matrices"></div>
+
+<h2>Upcoming dates to watch</h2>
+<div class="watch-list" id="watch"></div>
+
+<footer>
+  Signals and "Tungsten angle" notes are analysis for pre-sales use, generated from the linked public sources. Verify product capabilities with product management before using them with customers.
+</footer>
+</div>
+<script src="industry-watch-data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
